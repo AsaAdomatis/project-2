@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import MinMaxScaler
 
 # Load dataset
 file_path = "/Users/swapna/Desktop/project-2/fake_job_postings.csv"
@@ -20,17 +21,18 @@ for col in features:
     mapping[col] = {val: idx for idx, val in enumerate(unique_values)}
     df[col] = df[col].map(mapping[col])
 
-X = df[features]
+# Normalize the features
+scaler = MinMaxScaler()
+X = scaler.fit_transform(df[features])
 y = df["fraudulent"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train a basic model
-model = RandomForestClassifier(n_estimators=100, random_state=42)
+# Train a Linear Regression model
+model = LinearRegression()
 model.fit(X_train, y_train)
 
-st.title("Jupyter Notebook Interface - Fake Job Prediction")
+st.title("Jupyter Notebook Interface - Fake Job Prediction using Linear Regression")
 
-#param = st.number_input("Enter parameter", min_value=1, max_value=100, value=10)
 selected_job = st.selectbox("Select a Job Listing", df["title"].unique().tolist()[:20])
 
 if st.button("Predict Fake Job Posting"):
@@ -39,9 +41,10 @@ if st.button("Predict Fake Job Posting"):
             # Retrieve job features from dataframe
             job_features = df[df["title"] == selected_job][features]
             if not job_features.empty:
-                prediction = model.predict(job_features)[0]
-                result = "Fake Job Posting" if prediction == 1 else "Real Job Posting"
-                st.success(f"Prediction: {result}")
+                job_features_scaled = scaler.transform(job_features)
+                prediction = model.predict(job_features_scaled)[0]
+                result = f"Predicted Fraud Score: {prediction:.2f} (Closer to 1 = More Fake, Closer to 0 = Real)"
+                st.success(result)
             else:
                 st.warning("Selected job title is not in training data, unable to predict.")
         except Exception as e:
