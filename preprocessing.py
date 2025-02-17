@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 import re
 
+from sklearn.model_selection import train_test_split
 from imblearn.combine import SMOTEENN
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import RandomOverSampler
@@ -22,22 +23,21 @@ def clean_text(text:str):
         cleaned_text = " ".join(word for word in text.split() if word not in stop_words)
         return cleaned_text
 
-def preprocess(data:pd.DataFrame, vectorizer_type:str="tfidf", num_words:int=5000, 
-               add_qualitative:bool=False, convert_nulls:bool=False) -> pd.DataFrame:
-    # cleaning texts
-    data["text"] = data["title"] + " " + data["company_profile"] + " " + data["description"] + " " + data["requirements"]
-    data["text"].fillna("", inplace=True)
+def preprocess(data, vectorizer_type:str="tfidf", num_words:int=500, 
+               add_qualitative:bool=True, convert_nulls:bool=False) -> pd.DataFrame:
+    # # cleaning texts
+    # data["text"] = data["title"] + " " + data["company_profile"] + " " + data["description"] + " " + data["requirements"]
+    # data.fillna({"text": " "}, inplace=True)
+    data["text"] = data[["title", "company_profile", "description", "requirements"]].fillna("").agg(" ".join, axis=1)
     data["text_cleaned"] = data["text"].apply(clean_text)
 
     # vectorizing the data
     if vectorizer_type == "tfidf":
         vectorizer = TfidfVectorizer(max_features=num_words)
-        X = vectorizer.fit_transform(data["text_cleaned"])
-    elif vectorizer_type == "count":
-        vectorizer = CountVectorizer(max_features=num_words)
-        X = vectorizer.fit_transform(data["text_cleaned"])
     else:
-        raise ValueError(f"Invalid vectorizer: {vectorizer_type}. Choose from 'tdif' or 'count'!")
+        vectorizer = CountVectorizer(max_features=num_words)
+
+    X = vectorizer.fit_transform(data["text_cleaned"])
     X = pd.DataFrame(X.toarray(), columns=vectorizer.get_feature_names_out())
 
 
@@ -56,7 +56,8 @@ def preprocess(data:pd.DataFrame, vectorizer_type:str="tfidf", num_words:int=500
     return X
 
 
-def train_test_split(balancing:str = None, vectorizer_type:str="tfidf"):
+def custom_train_test_split(balancing:str = "SMOTEEN", vectorizer_type:str="tfidf", num_words:int=500, 
+               add_qualitative:bool=True, convert_nulls:bool=False):
     # cleaning initial data
     data = pd.read_csv("fake_job_postings.csv")
 
@@ -68,7 +69,8 @@ def train_test_split(balancing:str = None, vectorizer_type:str="tfidf"):
     X = data.drop(columns="fraudulent", axis=1)
     y = data["fraudulent"]
 
-    X = preprocess(X, vectorizer_type=vectorizer_type)
+    X = preprocess(X, num_words=num_words, vectorizer_type=vectorizer_type, add_qualitative=add_qualitative,
+                   convert_nulls=convert_nulls)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y)
 
@@ -86,3 +88,7 @@ def train_test_split(balancing:str = None, vectorizer_type:str="tfidf"):
         X_train, y_train = resampler.fit_resample(X_train, y_train)
 
     return  X_train, X_test, y_train, y_test
+
+if __name__ == "__main__":
+    X_train, X_test, y_train, y_test = custom_train_test_split()
+    X_train.to_csv("Text X_train.csv")
