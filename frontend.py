@@ -1,40 +1,68 @@
 import streamlit as st
+import pandas as pd
 import joblib
 import scipy.sparse as sp
 import numpy as np
 
-# Load the trained model and vectorizers
+# ✅ Load trained model, vectorizer, and label encoders properly
 model = joblib.load("logistic_model.pkl")
 tfidf = joblib.load("tfidf_vectorizer.pkl")
-label_encoders = joblib.load("label_encoders.pkl")
+label_encoders = joblib.load("label_encoders.pkl")  # This now contains class labels!
+
+# Load the dataset to extract unique values for dropdowns
+file_path = "fake_job_postings.csv"  # Ensure the correct file path
+df = pd.read_csv(file_path)
+
+# Extract unique values for dropdowns
+job_titles = df['title'].dropna().unique().tolist()
+company_profiles = df['company_profile'].dropna().unique().tolist()
+descriptions = df['description'].dropna().unique().tolist()
+requirements_list = df['requirements'].dropna().unique().tolist()
+benefits_list = df['benefits'].dropna().unique().tolist()
+
+# ✅ Correct way to extract category names from saved LabelEncoders
+employment_types = label_encoders['employment_type']['classes']
+required_experiences = label_encoders['required_experience']['classes']
+required_educations = label_encoders['required_education']['classes']
+industries = label_encoders['industry']['classes']
+functions = label_encoders['function']['classes']
 
 # Function to safely transform categorical inputs
-def safe_transform(label_encoder, value):
-    if value in label_encoder.classes_:
-        return label_encoder.transform([value])[0]
+def safe_transform(label_encoder_data, value):
+    encoder = label_encoder_data["encoder"]
+    if value in label_encoder_data["classes"]:
+        return encoder.transform([value])[0]
     else:
-        return label_encoder.transform(["Unknown"])[0]  # Fallback to "Unknown" if unseen
+        return encoder.transform(["Unknown"])[0]  # Fallback to "Unknown" if unseen
 
 # Streamlit UI
 st.title("Fake Job Posting Detection")
 
-# User inputs
-title = st.text_input("Job Title")
-company_profile = st.text_area("Company Profile")
-description = st.text_area("Job Description")
-requirements = st.text_area("Job Requirements")
-benefits = st.text_area("Job Benefits")
-telecommuting = st.selectbox("Is it a remote job?", [0, 1])
-has_company_logo = st.selectbox("Does it have a company logo?", [0, 1])
-has_questions = st.selectbox("Does it ask additional questions?", [0, 1])
-employment_type = st.selectbox("Employment Type", label_encoders['employment_type'].classes_)
-required_experience = st.selectbox("Required Experience", label_encoders['required_experience'].classes_)
-required_education = st.selectbox("Required Education", label_encoders['required_education'].classes_)
-industry = st.selectbox("Industry", label_encoders['industry'].classes_)
-function = st.selectbox("Function", label_encoders['function'].classes_)
+# Job Title Dropdown
+job_title = st.selectbox("Select a Job Title", job_titles)
+
+# Other inputs as dropdowns
+company_profile = st.selectbox("Select Company Profile", company_profiles)
+description = st.selectbox("Select Job Description", descriptions)
+requirements = st.selectbox("Select Job Requirements", requirements_list)
+benefits = st.selectbox("Select Job Benefits", benefits_list)
+
+# Convert Yes/No to 0/1
+yes_no_mapping = {"Yes": 1, "No": 0}
+
+telecommuting = yes_no_mapping[st.selectbox("Is it a remote job?", ["Yes", "No"])]
+has_company_logo = yes_no_mapping[st.selectbox("Does it have a company logo?", ["Yes", "No"])]
+has_questions = yes_no_mapping[st.selectbox("Does it ask additional questions?", ["Yes", "No"])]
+
+# ✅ FIX: Extract proper values for Employment Type dropdown
+employment_type = st.selectbox("Employment Type", employment_types)
+required_experience = st.selectbox("Required Experience", required_experiences)
+required_education = st.selectbox("Required Education", required_educations)
+industry = st.selectbox("Industry", industries)
+function = st.selectbox("Function", functions)
 
 # Process input
-text_input = " ".join([title, company_profile, description, requirements, benefits])
+text_input = " ".join([job_title, company_profile, description, requirements, benefits])
 text_vector = tfidf.transform([text_input])  # Transform text input using TF-IDF
 
 # Convert categorical values using the safe_transform function
