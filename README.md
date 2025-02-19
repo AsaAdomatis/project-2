@@ -31,7 +31,7 @@ You can close the following repository that will help you to open our code in yo
 
 2. Install the required dependencies
 
-**Usage**
+## **Usage**
 
 Our models have been training in a large dataset of fake job postings that has recordings of fake and real postings on the internet.
 
@@ -39,13 +39,13 @@ For anyone interested in running our model on your local computer, you can follo
 
 ![][image1]
 
-**Data**
+## **Data**
 
 The dataset used for this project comes from the Kaggle Faje\_job\_postings dataset. Due to an imbalanced dataset we have worked through preprocessing and cleaning out data, many values were transformed using Vectorizer. It was preprocessed by removing missing values, encoding categorical features and scaling Numerical features.
 
 URL: [https://www.kaggle.com/datasets/srisaisuhassanisetty/fake-job-postings](https://www.kaggle.com/datasets/srisaisuhassanisetty/fake-job-postings)
 
-**Models**
+## **Models**
 
 Based on the objective of our project we have selected the following Classification models:
 
@@ -58,11 +58,11 @@ Based on the objective of our project we have selected the following Classificat
 
 All models were trained and tested against each other to find the best outcome and our premium model that will help us to achieve our goal for predicting fake job postings. 
 
-**Evaluation**
+## **Evaluation**
 
 The models were evaluated using  accuracy, precision, recall and F1-score. The model outperformed others is Random Forest Classifier with a F1-score for fraudulent jobs of 0.78 and a weighted avg of 0.98
 
-**Results**
+## **Results**
 
 After training and evaluating several models, the model was the best performer, achieving a test set accuracy of 78%. The model was successfully able to predict a fake job posting with high accuracy**.**
 
