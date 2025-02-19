@@ -37,6 +37,8 @@ Our models have been training in a large dataset of fake job postings that has r
 
 For anyone interested in running our model on your local computer, you can follow the instructions above to clone the repository, install the appropriate dependencies and import all the important dependencies a shown below:
 
+![Image](https://github.com/user-attachments/assets/ef3e8037-77db-476f-b6c9-7cc3699611ea)
+
 ![][image1]
 
 ## **Data**
