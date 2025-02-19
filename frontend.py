@@ -6,6 +6,18 @@ import numpy as np
 import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+
+# Streamlit UI
+st.title("Fake Job Posting Detection")
+
+# Display team pictures
+st.header("Meet Our Team")
+#st.image("team_picture_1.jpg", caption="Team Member 1", use_column_width=True)
+#st.image("team_picture_2.jpg", caption="Team Member 2", use_column_width=True)
+#t.image("team_picture_3.jpg", caption="Team Member 3", use_column_width=True)
+#st.image("team_picture_4.jpg", caption="Team Member 4", use_column_width=True)
+#st.image("team_picture_5.jpg", caption="Team Member 5", use_column_width=True)
+
 # ✅ Load available models dynamically
 model_files = [f for f in os.listdir() if f.endswith("_model.pkl")]
 selected_model_file = st.selectbox("Select a Model", model_files)
@@ -37,16 +49,7 @@ if not hasattr(tfidf, 'idf_'):
     joblib.dump(tfidf, "sara_tfidf_vectorizer.pkl")  # Save fitted vectorizer
     st.success("TF-IDF vectorizer successfully fitted and saved.")
 
-# Streamlit UI
-st.title("Fake Job Posting Detection")
 
-# Display team pictures
-st.header("Meet Our Team")
-#st.image("team_picture_1.jpg", caption="Team Member 1", use_column_width=True)
-#st.image("team_picture_2.jpg", caption="Team Member 2", use_column_width=True)
-#t.image("team_picture_3.jpg", caption="Team Member 3", use_column_width=True)
-#st.image("team_picture_4.jpg", caption="Team Member 4", use_column_width=True)
-#st.image("team_picture_5.jpg", caption="Team Member 5", use_column_width=True)
 
 # Four required inputs as text inputs
 job_title = st.text_input("Enter the Job Title")
