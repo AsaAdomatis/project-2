@@ -1,4 +1,4 @@
-## Project-2
+# Project-2
 
 Team Members: Asa Adomatus, Kevin Miller, Sara Moujahed, Xavier Figueroa, Laxmi Atluri, Pablo Romero
 
