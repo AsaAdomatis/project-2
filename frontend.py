@@ -29,7 +29,7 @@ if hasattr(model, 'best_estimator_'):
     model = model.best_estimator_
 
 # Load corresponding accuracy file if exists
-accuracy_file = selected_model_file.replace("_model.pkl", "_accuracy.pkl")
+accuracy_file = "pickles/" + selected_model_file.replace("_model.pkl", "_accuracy.pkl")
 if os.path.exists(accuracy_file):
     model_accuracy = joblib.load(accuracy_file)
 else:
@@ -37,8 +37,10 @@ else:
 
 # Loading default vectorizer
 if not ("bayes" in selected_model_file or "svm" in selected_model_file):
-    tfidf = joblib.load("sara_tfidf_vectorizer.pkl")
-    # Remaking vectorizer if doesn't exist
+    # trying to load default pickle
+    tfidf = joblib.load("pickles/default_vectorizer.pkl")
+
+    # fitting vectorizer if unfitted
     if not hasattr(tfidf, 'idf_'):
         st.warning("TF-IDF vectorizer not fitted. Fitting now...")
         df = pd.read_csv("fake_job_postings.csv")
@@ -49,7 +51,7 @@ if not ("bayes" in selected_model_file or "svm" in selected_model_file):
             df['requirements'].fillna('')
         ).tolist()
         tfidf.fit(corpus)
-        joblib.dump(tfidf, "sara_tfidf_vectorizer.pkl")  # Save fitted vectorizer
+        joblib.dump(tfidf, "pickles/default_vectorizer.pkl")  # Save fitted vectorizer
         st.success("TF-IDF vectorizer successfully fitted and saved.")
 
 # Four required inputs as text inputs
