@@ -13,40 +13,60 @@ import preprocessing as prep
 
 
 
-def train_models(verbose:bool=True):
+def train_models(models:dict=None, verbose:bool=True):
     """
     I want to build a table of the best models
     """
-
-    models = {
-        # "SVM": {
-        #     "model": SVC,
-        #     "hyperparameters": {
-        #         'C': [1, 10, 100, 500, 1000], # adjusts level of overfitting. higher overfits, lower, under
-        #         'gamma': ['scale', 'auto'], # adjusts complexity of boundaries, high overfits, lower underfits
-        #         'kernel': ['rbf', 'poly', 'linear']
-        #     },
-        #     "add_qualitative": True,
-        #     "balancing": "SMOTEEN"
-        # },
-        "complement_bayes": {
-            "model": ComplementNB,
-            "hyperparameters": {
-                "alpha": [0.01, 0.1, 1.0],
-                "norm": [True, False]
+    if models is None:
+        models = {
+            "complement_bayes": {
+                "model": ComplementNB,
+                "hyperparameters": {
+                    "alpha": [0.01, 0.1, 1.0],
+                    "norm": [True, False]
+                },
+                "add_qualitative": False,
+                "balancing": None
             },
-            "add_qualitative": False,
-            "balancing": None
-        },
-        "multinomial_bayes": {
-            "model": MultinomialNB,
-            "hyperparameters": {
-                "alpha": [0.01, 0.1, 1.0]
+            "multinomial_bayes": {
+                "model": MultinomialNB,
+                "hyperparameters": {
+                    "alpha": [0.01, 0.1, 1.0]
+                },
+                "add_qualitative": False,
+                "balancing": "SMOTEEN"
             },
-            "add_qualitative": False,
-            "balancing": "SMOTEEN"
+            "SVM_rbf": {
+                "model": SVC,
+                "hyperparameters": {
+                    'C': [1, 10, 100], # adjusts level of overfitting. higher overfits, lower, under
+                    'gamma': ['scale', 'auto'] # adjusts complexity of boundaries, high overfits, lower underfits
+                },
+                "add_qualitative": True,
+                "balancing": "SMOTEEN"
+            },
+            "SVM_poly": {
+                "model": SVC,
+                "hyperparameters": {
+                    'coef0': [0, 1],
+                    'degree': [2, 3, 5],
+                    'C': [1, 10, 100, 500, 1000], # adjusts level of overfitting. higher overfits, lower, under
+                    'gamma': ['scale', 'auto'] # adjusts complexity of boundaries, high overfits, lower underfits
+                },
+                "add_qualitative": True,
+                "balancing": "SMOTEEN"
+            },
+            "SVM_linear": {
+                "model": SVC,
+                "hyperparameters": {
+                    'C': [1, 10, 100], # adjusts level of overfitting. higher overfits, lower, under
+                    'gamma': ['scale', 'auto'], # adjusts complexity of boundaries, high overfits, lower underfits
+                    'kernel': ['linear']
+                },
+                "add_qualitative": True,
+                "balancing": "SMOTEEN"
+            }
         }
-    }
 
     model_dicts = []
     for name, value in models.items():

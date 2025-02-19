@@ -12,6 +12,8 @@ from imblearn.over_sampling import RandomOverSampler
 import nltk
 from nltk.corpus import stopwords
 
+vectorizer = None
+
 # cleaning text data
 nltk.download("stopwords")
 nltk.download("punkt")
@@ -24,7 +26,7 @@ def clean_text(text:str):
         return cleaned_text
 
 def preprocess(data, vectorizer_type:str="tfidf", num_words:int=500, 
-               add_qualitative:bool=True, convert_nulls:bool=False) -> pd.DataFrame:
+               add_qualitative:bool=True, convert_nulls:bool=False, ) -> pd.DataFrame:
     # # cleaning texts
     # data["text"] = data["title"] + " " + data["company_profile"] + " " + data["description"] + " " + data["requirements"]
     # data.fillna({"text": " "}, inplace=True)
@@ -32,10 +34,14 @@ def preprocess(data, vectorizer_type:str="tfidf", num_words:int=500,
     data["text_cleaned"] = data["text"].apply(clean_text)
 
     # vectorizing the data
-    if vectorizer_type == "tfidf":
-        vectorizer = TfidfVectorizer(max_features=num_words)
-    else:
-        vectorizer = CountVectorizer(max_features=num_words)
+    global vectorizer
+    if vectorizer is None:
+        if vectorizer_type == "tfidf":
+            vectorizer = TfidfVectorizer(max_features=num_words)
+        else:
+            vectorizer = CountVectorizer(max_features=num_words)
+
+
 
     X = vectorizer.fit_transform(data["text_cleaned"])
     X = pd.DataFrame(X.toarray(), columns=vectorizer.get_feature_names_out())
