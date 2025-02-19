@@ -66,7 +66,7 @@ The models were evaluated using  accuracy, precision, recall and F1-score. The m
 
 After training and evaluating several models, the model was the best performer, achieving a test set accuracy of 78%. The model was successfully able to predict a fake job posting with high accuracy**.**
 
-**Project Requirements**
+## **Project Requirements**
 
 Requirements Data Model Implementation (25 points) There is a Jupyter notebook that thoroughly describes the data extraction, cleaning, and transformation process, and the cleaned data is exported as CSV files for the machine learning model. (10 points)
 
