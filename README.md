@@ -17,8 +17,9 @@ The purpose of our project aims to build a machine learning (ML) model that can 
 3. Data  
 4. Models  
 5. Evaluation  
-6. Results  
-7. Project Requirements.
+6. Results
+7. Demo / UI Frontend Application
+8. Project Requirements.
 
 ## **Installation**
 
@@ -65,9 +66,15 @@ All models were trained and tested against each other to find the best outcome a
 
 The models were evaluated using  accuracy, precision, recall and F1-score. The model outperformed others is Random Forest Classifier with a F1-score for fraudulent jobs of 0.78 and a weighted avg of 0.98
 
+![Image](https://github.com/user-attachments/assets/c0d1665d-208a-41db-8b48-b20298db392a)
+
 ## **Results**
 
-After training and evaluating several models, the model was the best performer, achieving a test set accuracy of 78%. The model was successfully able to predict a fake job posting with high accuracy**.**
+After training and evaluating several models, the model was the best performer, achieving a test set accuracy of 78%. The model was successfully able to predict a fake job posting with high accuracy.
+
+## **Demo / UI Frontend Application**
+
+Out Team has developed an UI frontend demo that shows all our coding in action, it take different parameters as input that our model analyzes and gives an accurate prediction about the job posting either legitimate or fake.
 
 ## **Project Requirements**
 
