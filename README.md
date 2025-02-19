@@ -1,4 +1,5 @@
 # Project-2
+![Image](https://github.com/user-attachments/assets/1d216964-044f-43e2-a8d7-cb44aef67635)
 
 Team Members: Asa Adomatus, Kevin Miller, Sara Moujahed, Xavier Figueroa, Laxmi Atluri, Pablo Romero
 
