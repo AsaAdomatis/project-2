@@ -13,7 +13,7 @@ import preprocessing as prep
 
 
 
-def train_models(models:dict=None, verbose:bool=True):
+def train_models(models:dict=None, verbose:bool=True, num_words:int=500):
     """
     I want to build a table of the best models
     """
@@ -26,7 +26,7 @@ def train_models(models:dict=None, verbose:bool=True):
                     "norm": [True, False]
                 },
                 "add_qualitative": False,
-                "balancing": None
+                "balancing": "SMOTEEN"
             },
             "multinomial_bayes": {
                 "model": MultinomialNB,
@@ -75,12 +75,15 @@ def train_models(models:dict=None, verbose:bool=True):
 
         # get train and test
         X_train, X_test, y_train, y_test = prep.custom_train_test_split(balancing=value["balancing"],
-                                                                        add_qualitative=value["add_qualitative"])
+                                                                        add_qualitative=value["add_qualitative"], 
+                                                                        num_words=num_words)
         
         # definding custom scorer for f1 of fraudelent jobs
         f1_1_scorer = make_scorer(f1_score, average='binary', pos_label=1)
         # use grid search to find the best parameters
-        grid_search = GridSearchCV(value["model"](), value["hyperparameters"], scoring=f1_1_scorer)
+        if verbose:
+            verbose = 3
+        grid_search = GridSearchCV(value["model"](), value["hyperparameters"], scoring=f1_1_scorer, verbose=verbose)
         grid_search.fit(X_train, y_train)
 
         # training the better model
