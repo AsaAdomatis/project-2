@@ -1,15 +1,15 @@
-# Project-2
+## Project-2
 
 Team Members: Asa Adomatus, Kevin Miller, Sara Moujahed, Xavier Figueroa, Laxmi Atluri, Pablo Romero
 
-**Overview:**  
+## Overview:
 This repository is for Team10 Project 2\. 
 
 In today's digital age, online job platforms have become a vital resource for job seekers and employers alike. However, with the convenience of these platforms comes the growing problem of fraudulent job postings. These fake listings not only waste time for job seekers but can also lead to scams, identity theft, or financial loss. Detecting fake job postings is a critical task for ensuring the safety and trustworthiness of job platforms.
 
 The purpose of our project aims to build a machine learning (ML) model that can automatically detect fraudulent job postings by analyzing patterns in the text and metadata of job listings. Our model will classify job postings as either legitimate or fake.
 
-**Table of Contents:**
+## **Table of Contents:**
 
 1. Installation  
 2. Usage  
@@ -19,7 +19,7 @@ The purpose of our project aims to build a machine learning (ML) model that can 
 6. Results  
 7. Project Requirements.
 
-**Installation**
+## **Installation**
 
 You can close the following repository that will help you to open our code in your favorite Dev Tools
 
