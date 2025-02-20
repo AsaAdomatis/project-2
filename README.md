@@ -66,7 +66,7 @@ All models were trained and tested against each other to find the best outcome a
 
 ## **Evaluation**
 
-The models were evaluated using  accuracy, precision, recall and F1-score. The model outperformed others is Random Forest Classifier with a F1-score for fraudulent jobs of 0.78 and a weighted avg of 0.98
+The models were evaluated using  accuracy, precision, recall and F1-score. The model outperformed others is Logistic Regression with a F1-score for fraudulent jobs of 0.99% and a weighted avg of 99%
 
 ![Image](https://github.com/user-attachments/assets/c0d1665d-208a-41db-8b48-b20298db392a)
 
