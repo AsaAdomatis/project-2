@@ -40,7 +40,7 @@ elif os.path.exists(gs_f1_file):
 else:
     model_f1 = None
 
-# Loading default vectorizer
+#Loading default vectorizer
 if not ("bayes" in selected_model_file or "svm" in selected_model_file):
     # trying to load default pickle
     tfidf = joblib.load("pickles/default_vectorizer.pkl")
@@ -66,6 +66,7 @@ description = st.text_input("Enter Job Description")
 requirements = st.text_input("Enter Job Requirements")
 
 # Show prediction only if all fields are filled
+X_input = None
 if all([job_title.strip(), company_profile.strip(), description.strip(), requirements.strip()]):
     # Process input without cleaning
     raw_text = " ".join([job_title, company_profile, description, requirements])
@@ -80,14 +81,22 @@ if all([job_title.strip(), company_profile.strip(), description.strip(), require
         X_input = prep.preprocess(text=raw_text)
 
     # preprocessing for rfc model
-    elif "rfc" in selected_model_file:
+    elif "rfc" in selected_model_file or "dc" in selected_model_file:
+        # get model name
+        model_name = selected_model_file.split(sep="_")[0]
+
+        # clean and vectorize for final output
         cleaned_text = prep.clean_text(raw_text)
-        vectorizer = joblib.load("pickles/rfc_vectorizer.pkl")
+        vectorizer = joblib.load(f"pickles/{model_name}_vectorizer.pkl")
         X_input = vectorizer.transform([cleaned_text]).toarray()
 
-    # preprocessing for defaults (logistic model)
-    else:
+    # preprocessing for logistic and other cases
+    if X_input is None:
         try:
+            # using logistic vectorizer
+            if "logistic" in selected_model_file:
+                tfidf = joblib.load("pickles/logistic_vectorizer.pkl")
+
             text_vector = tfidf.transform([raw_text])  # Transform raw text input using TF-IDF
             # st.text(f"Transformed Vector Shape: {text_vector.shape}")  # Debug output # FIX: Remove when done
         except ValueError as e:
