@@ -72,11 +72,12 @@ The models were evaluated using  accuracy, precision, recall and F1-score. The m
 
 ## **Results**
 
-After training and evaluating several models, the model was the best performer, achieving a test set accuracy of 78%. The model was successfully able to predict a fake job posting with high accuracy.
+After training and evaluating several models, our Logistic Regression model has the best performance when identifying real vs fake job postings as it's accurate by 0,99% using F1-score with a weighted avarage of 99%
+The model was successfully able to predict a fake job posting with high accuracy.
 
 ## **Demo / UI Frontend Application**
 
-Out Team has developed an UI frontend demo that shows all our coding in action, it take different parameters as input that our model analyzes and gives an accurate prediction about the job posting either legitimate or fake.
+Out Team has developed an UI frontend demo using streamlit that shows all our coding in action, it take different parameters as input that our model analyzes and gives an accurate prediction about the job posting either legitimate or fake.
 
 ## **Project Requirements**
 
