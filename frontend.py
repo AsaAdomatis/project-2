@@ -22,10 +22,23 @@ if hasattr(model, 'best_estimator_'):
 
 # Load corresponding accuracy file if exists
 accuracy_file = "pickles/" + selected_model_file.replace("_model.pkl", "_accuracy.pkl")
-if os.path.exists(accuracy_file):
+gs_accuracy_file = "pickles/" + selected_model_file.replace("_grid_search.pkl", "_accuracy.pkl")
+if "_grid_search" not in selected_model_file and os.path.exists(accuracy_file):
     model_accuracy = joblib.load(accuracy_file)
+elif os.path.exists(gs_accuracy_file):
+    model_accuracy = joblib.load(gs_accuracy_file)
 else:
     model_accuracy = None
+
+# Loading corresponding f1 score file if exists
+f1_file = "pickles/" + selected_model_file.replace("_model.pkl", "_f1_score.pkl")
+gs_f1_file = "pickles/" + selected_model_file.replace("_grid_search.pkl", "_f1_score.pkl")
+if "_grid_search" not in selected_model_file and os.path.exists(f1_file):
+    model_f1 = joblib.load(f1_file)
+elif os.path.exists(gs_f1_file):
+    model_f1 = joblib.load(gs_f1_file)
+else:
+    model_f1 = None
 
 # Loading default vectorizer
 if not ("bayes" in selected_model_file or "svm" in selected_model_file):
@@ -56,7 +69,7 @@ requirements = st.text_input("Enter Job Requirements")
 if all([job_title.strip(), company_profile.strip(), description.strip(), requirements.strip()]):
     # Process input without cleaning
     raw_text = " ".join([job_title, company_profile, description, requirements])
-    st.text(f"Raw Text Preview: {raw_text[:200]}...")  # Debug output # FIX: Remove when done
+    # st.text(f"Raw Text Preview: {raw_text[:200]}...")  # Debug output 
 
     # preprocessing (only for bayes and svm)
     if "bayes" in selected_model_file or "svm" in selected_model_file:
@@ -66,11 +79,17 @@ if all([job_title.strip(), company_profile.strip(), description.strip(), require
             prep.vectorizer = joblib.load("pickles/bayes_vectorizer.pkl")
         X_input = prep.preprocess(text=raw_text)
 
-    # preprocessing for defaults
+    # preprocessing for rfc model
+    elif "rfc" in selected_model_file:
+        cleaned_text = prep.clean_text(raw_text)
+        vectorizer = joblib.load("pickles/rfc_vectorizer.pkl")
+        X_input = vectorizer.transform([cleaned_text]).toarray()
+
+    # preprocessing for defaults (logistic model)
     else:
         try:
             text_vector = tfidf.transform([raw_text])  # Transform raw text input using TF-IDF
-            st.text(f"Transformed Vector Shape: {text_vector.shape}")  # Debug output # FIX: Remove when done
+            # st.text(f"Transformed Vector Shape: {text_vector.shape}")  # Debug output # FIX: Remove when done
         except ValueError as e:
             st.error(f"⚠️ TF-IDF transformation failed: {e}")
             text_vector = None
@@ -89,7 +108,7 @@ if all([job_title.strip(), company_profile.strip(), description.strip(), require
                 missing_features = expected_features - current_features
                 padding = sp.csr_matrix(np.zeros((1, missing_features)))
                 X_input = sp.hstack([text_vector, padding])
-                st.info(f"ℹ️ Added {missing_features} zero-filled features to match model input size.")
+                #st.info(f"ℹ️ Added {missing_features} zero-filled features to match model input size.")
             elif current_features > expected_features:
                 X_input = text_vector[:, :expected_features]
                 st.info(f"ℹ️ Trimmed extra features to match model input size.")
@@ -111,6 +130,11 @@ if all([job_title.strip(), company_profile.strip(), description.strip(), require
             st.info(f"📊 The selected model's accuracy rate is: {model_accuracy * 100:.2f}%")
         else:
             st.warning("⚠️ Accuracy rate for the selected model is not available.")
+
+        if model_f1 is not None:
+            st.info(f"📊 The selected model's f1 score for fraudulent data is: {model_f1 * 100:.2f}%")
+        else:
+            st.warning("⚠️ f1 scoring for the selected model is not available.")
 
     except ValueError as e:
         st.error(f"⚠️ Prediction failed due to feature mismatch: {e}")
