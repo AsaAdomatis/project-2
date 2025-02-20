@@ -27,6 +27,7 @@ if os.path.exists(accuracy_file):
 else:
     model_accuracy = None
 
+
 # Loading default vectorizer
 if not ("bayes" in selected_model_file or "svm" in selected_model_file):
     # trying to load default pickle
@@ -66,7 +67,13 @@ if all([job_title.strip(), company_profile.strip(), description.strip(), require
             prep.vectorizer = joblib.load("pickles/bayes_vectorizer.pkl")
         X_input = prep.preprocess(text=raw_text)
 
-    # preprocessing for defaults
+    # preprocessing for rfc model
+    elif "rfc" in selected_model_file:
+        cleaned_text = prep.clean_text(raw_text)
+        vectorizer = joblib.load("pickles/rfc_vectorizer.pkl")
+        X_input = vectorizer.transform([cleaned_text]).toarray()
+
+    # preprocessing for defaults (logistic model)
     else:
         try:
             text_vector = tfidf.transform([raw_text])  # Transform raw text input using TF-IDF
