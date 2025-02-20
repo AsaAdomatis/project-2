@@ -27,6 +27,12 @@ if os.path.exists(accuracy_file):
 else:
     model_accuracy = None
 
+# Loading corresponding f1 score file if exists
+f1_file = "pickles/" + selected_model_file.replace("_model.pkl", "_f1_score.pkl")
+if os.path.exists(f1_file):
+    model_f1 = joblib.load(f1_file)
+else:
+    model_f1 = None
 
 # Loading default vectorizer
 if not ("bayes" in selected_model_file or "svm" in selected_model_file):
@@ -118,6 +124,11 @@ if all([job_title.strip(), company_profile.strip(), description.strip(), require
             st.info(f"📊 The selected model's accuracy rate is: {model_accuracy * 100:.2f}%")
         else:
             st.warning("⚠️ Accuracy rate for the selected model is not available.")
+
+        if model_f1 is not None:
+            st.info(f"📊 The selected model's f1 score for fraudulent data is: {model_f1 * 100:.2f}%")
+        else:
+            st.warning("⚠️ f1 scoring for the selected model is not available.")
 
     except ValueError as e:
         st.error(f"⚠️ Prediction failed due to feature mismatch: {e}")
